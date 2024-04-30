@@ -1,0 +1,122 @@
+Step 1: Deleting Vote Pod:
+
+Before Deleting:
+root@ip-172-31-45-131:~# kubectl get po
+NAME                      READY   STATUS    RESTARTS       AGE
+vote-7d884dd585-mpgp7     1/1     Running   0              5m2s
+
+root@ip-172-31-45-131:~# kubectl delete pod vote-7d884dd585-mpgp7
+pod "vote-7d884dd585-mpgp7" deleted
+
+Pod Deletion: The pod "vote-7d884dd585-mpgp7" was successfully deleted.
+
+After Deleting:
+root@ip-172-31-45-131:~# kubectl get po
+NAME                      READY   STATUS    RESTARTS        AGE
+vote-7d884dd585-n7594     1/1     Running   0               9s
+
+Pod Replacement: Kubernetes automatically created a new pod "vote-7d884dd585-n7594" to maintain the desired state.
+
+root@ip-172-31-45-131:~# kubectl get events
+LAST SEEN   TYPE     REASON             OBJECT                         MESSAGE
+9m30s       Normal   Killing            pod/vote-7d884dd585-fvbqh      Stopping container vote
+9m29s       Normal   Scheduled          pod/vote-7d884dd585-mpgp7      Successfully assigned default/vote-7d884dd585-mpgp7 to ip-172-31-45-131
+9m29s       Normal   Pulled             pod/vote-7d884dd585-mpgp7      Container image "dockersamples/examplevotingapp_vote:before" already present on machine
+9m29s       Normal   Created            pod/vote-7d884dd585-mpgp7      Created container vote
+9m29s       Normal   Started            pod/vote-7d884dd585-mpgp7      Started container vote
+118s        Normal   Killing            pod/vote-7d884dd585-mpgp7      Stopping container vote
+118s        Normal   Scheduled          pod/vote-7d884dd585-n7594      Successfully assigned default/vote-7d884dd585-n7594 to ip-172-31-45-131
+116s        Normal   Pulled             pod/vote-7d884dd585-n7594      Container image "dockersamples/examplevotingapp_vote:before" already present on machine
+116s        Normal   Created            pod/vote-7d884dd585-n7594      Created container vote
+116s        Normal   Started            pod/vote-7d884dd585-n7594      Started container vote
+9m30s       Normal   SuccessfulCreate   replicaset/vote-7d884dd585     Created pod: vote-7d884dd585-mpgp7
+118s        Normal   SuccessfulCreate   replicaset/vote-7d884dd585     Created pod: vote-7d884dd585-n7594
+
+Overall, the Kubernetes cluster effectively managed the deletion of the old pod and ensured the availability of the application by creating a new pod to replace it.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Step 2: Deleting Worker Pod:
+
+Before Deleting:
+root@ip-172-31-45-131:~# kubectl get po
+NAME                      READY   STATUS    RESTARTS        AGE
+worker-6fc5d5b668-zqmrm   1/1     Running   1 (7m49s ago)   9m18s
+
+root@ip-172-31-45-131:~# kubectl delete pod worker-6fc5d5b668-zqmrm
+pod "worker-6fc5d5b668-zqmrm" deleted
+
+Pod Deletion: The worker pod "worker-6fc5d5b668-zqmrm" was successfully deleted.
+
+root@ip-172-31-45-131:~# kubectl get po
+NAME                      READY   STATUS    RESTARTS        AGE
+worker-6fc5d5b668-4xp95   1/1     Running   0               14s
+
+Pod Replacement: A new worker pod "worker-6fc5d5b668-4xp95" was created to replace the deleted one.
+
+root@ip-172-31-45-131:~# kubectl get events
+LAST SEEN   TYPE     REASON             OBJECT                         MESSAGE
+60s         Normal   Scheduled          pod/worker-6fc5d5b668-4xp95    Successfully assigned default/worker-6fc5d5b668-4xp95 to ip-172-31-45-131
+60s         Normal   Pulling            pod/worker-6fc5d5b668-4xp95    Pulling image "dockersamples/examplevotingapp_worker"
+58s         Normal   Pulled             pod/worker-6fc5d5b668-4xp95    Successfully pulled image "dockersamples/examplevotingapp_worker" in 1.848816381s (1.848827768s including waiting)
+58s         Normal   Created            pod/worker-6fc5d5b668-4xp95    Created container worker
+58s         Normal   Started            pod/worker-6fc5d5b668-4xp95    Started container worker
+11m         Normal   Killing            pod/worker-6fc5d5b668-p6p54    Stopping container worker
+11m         Normal   Scheduled          pod/worker-6fc5d5b668-zqmrm    Successfully assigned default/worker-6fc5d5b668-zqmrm to ip-172-31-45-131
+9m42s       Normal   Pulling            pod/worker-6fc5d5b668-zqmrm    Pulling image "dockersamples/examplevotingapp_worker"
+11m         Normal   Pulled             pod/worker-6fc5d5b668-zqmrm    Successfully pulled image "dockersamples/examplevotingapp_worker" in 1.856687114s (1.856700194s including waiting)
+9m40s       Normal   Created            pod/worker-6fc5d5b668-zqmrm    Created container worker
+9m40s       Normal   Started            pod/worker-6fc5d5b668-zqmrm    Started container worker
+9m40s       Normal   Pulled             pod/worker-6fc5d5b668-zqmrm    Successfully pulled image "dockersamples/examplevotingapp_worker" in 1.946505707s (1.946517418s including waiting)
+61s         Normal   Killing            pod/worker-6fc5d5b668-zqmrm    Stopping container worker
+11m         Normal   SuccessfulCreate   replicaset/worker-6fc5d5b668   Created pod: worker-6fc5d5b668-zqmrm
+61s         Normal   SuccessfulCreate   replicaset/worker-6fc5d5b668   Created pod: worker-6fc5d5b668-4xp95
+
+Overall, the Kubernetes cluster effectively managed the deletion of the old worker pod and ensured the availability of the application by creating a new pod to replace it.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Step 3: Deleting db Pod:
+
+Before Deleting:
+root@ip-172-31-45-131:~# kubectl get po
+NAME                      READY   STATUS    RESTARTS      AGE
+db-58cc845644-5s2xg       1/1     Running   0             11m
+
+root@ip-172-31-45-131:~# kubectl delete pod db-58cc845644-5s2xg
+pod "db-58cc845644-5s2xg" deleted
+
+Pod Deletion: The db pod "db-58cc845644-5s2xg" was successfully deleted.
+
+root@ip-172-31-45-131:~# kubectl get po
+NAME                      READY   STATUS    RESTARTS      AGE
+db-58cc845644-4lblv       1/1     Running   0             73s
+
+Pod Replacement: A new db pod "db-58cc845644-4lblv" was created to replace the deleted one.
+
+root@ip-172-31-45-131:~# kubectl get events
+LAST SEEN   TYPE     REASON             OBJECT                         MESSAGE
+97s         Normal   Scheduled          pod/db-58cc845644-4lblv        Successfully assigned default/db-58cc845644-4lblv to ip-172-31-45-131
+98s         Normal   Pulled             pod/db-58cc845644-4lblv        Container image "postgres:9.3" already present on machine
+97s         Normal   Created            pod/db-58cc845644-4lblv        Created container db
+97s         Normal   Started            pod/db-58cc845644-4lblv        Started container db
+14m         Normal   Killing            pod/db-58cc845644-5j5bb        Stopping container db
+14m         Normal   Scheduled          pod/db-58cc845644-5s2xg        Successfully assigned default/db-58cc845644-5s2xg to ip-172-31-45-131
+14m         Normal   Pulled             pod/db-58cc845644-5s2xg        Container image "postgres:9.3" already present on machine
+14m         Normal   Created            pod/db-58cc845644-5s2xg        Created container db
+14m         Normal   Started            pod/db-58cc845644-5s2xg        Started container db
+98s         Normal   Killing            pod/db-58cc845644-5s2xg        Stopping container db
+14m         Normal   SuccessfulCreate   replicaset/db-58cc845644       Created pod: db-58cc845644-5s2xg
+98s         Normal   SuccessfulCreate   replicaset/db-58cc845644       Created pod: db-58cc845644-4lblv
+
+Overall, the Kubernetes cluster effectively managed the deletion of the old db pod and ensured the availability of the database by creating a new pod to replace it.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+complete the assignment by making the result pod work ?
+
+* In the process of managing the pods within the Kubernetes cluster, each pod underwent a deletion operation followed by the creation of a replacement pod to maintain the application's functionality. 
+
+* Initially, the vote pod was deleted, and subsequently, a new pod was created to take its place. Similarly, the worker pod was removed, and a new one was spawned to ensure the seamless operation of 
+  the application. Lastly, the database pod underwent deletion, after which a fresh pod was instantiated to uphold the database functionality.
+
+* Throughout this process, Kubernetes effectively orchestrated the deletion and recreation of the pods, ensuring minimal disruption to the application's availability and performance. This demonstrates
+  the robustness of Kubernetes in managing containerized workloads and maintaining the desired state of the application components.
+
+
+*********************************************************************************************Completed***************************************************************************************************
